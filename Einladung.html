@@ -27,6 +27,9 @@
     min-height:100vh;
     font-family:'Jost', sans-serif;
     background:var(--wine-900);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .scene{
@@ -35,7 +38,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:2rem;
+    padding:1.5rem;
     overflow:hidden;
     background:
       radial-gradient(ellipse 80% 60% at 50% -10%, var(--wine-700), transparent 60%),
@@ -71,17 +74,24 @@
   .envelope-wrap{ text-align:center; }
   .envelope{
     position:relative;
-    width:min(300px, 78vw);
+    width:min(280px, 85vw);
     aspect-ratio:300/205;
     cursor:pointer;
-    filter:drop-shadow(0 25px 45px rgba(0,0,0,.5));
+    filter:drop-shadow(0 20px 35px rgba(0,0,0,.4));
     transition:transform .3s cubic-bezier(.34,.1,.68,1);
-  }
-  .envelope:hover{
-    transform:scale(1.08) translateY(-8px);
+    -webkit-tap-highlight-color: transparent;
   }
   .envelope:active{
     transform:scale(0.95);
+  }
+  @media (min-width: 640px) {
+    .envelope{
+      width:min(300px, 78vw);
+      filter:drop-shadow(0 25px 45px rgba(0,0,0,.5));
+    }
+    .envelope:hover{
+      transform:scale(1.08) translateY(-8px);
+    }
   }
   .env-back{
     position:absolute; inset:0;
@@ -127,9 +137,9 @@
     opacity:0;
   }
   .hint{
-    margin-top:1.4rem;
+    margin-top:1.2rem;
     color:var(--gold-light);
-    font-size:.8rem;
+    font-size:.75rem;
     letter-spacing:.2em;
     text-transform:uppercase;
     opacity:.75;
@@ -144,20 +154,22 @@
   /* Card */
   .card{
     position:absolute;
-    max-width:480px; width:92%;
+    max-width:500px; 
+    width:95%;
     background:linear-gradient(160deg, var(--ivory), var(--ivory-dim));
     color:var(--ink);
     border-radius:8px;
     border:1px solid rgba(201,161,94,.55);
     box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 6px rgba(201,161,94,.08);
-    padding:clamp(2.2rem,5vw,3.4rem) clamp(1.8rem,6vw,3.8rem);
+    padding:clamp(1.8rem, 5vw, 3.4rem) clamp(1.4rem, 5vw, 3.8rem);
     text-align:center;
     opacity:0;
     transform:scale(.92) translateY(20px);
     pointer-events:none;
     transition:opacity .7s cubic-bezier(.34,.1,.68,1), transform .7s cubic-bezier(.34,.1,.68,1);
-    max-height:85vh;
+    max-height:90vh;
     overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
   }
   .card::before{
     content:'';
@@ -182,35 +194,36 @@
   }
 
   .eyebrow{
-    font-size:.72rem;
-    letter-spacing:.28em;
+    font-size:.7rem;
+    letter-spacing:.25em;
     text-transform:uppercase;
     color:var(--rose);
     font-weight:500;
-    margin:0 0 1rem;
+    margin:0 0 .8rem;
   }
   h1{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
     font-weight:600;
-    font-size:clamp(1.9rem, 5vw, 2.7rem);
+    font-size:clamp(1.6rem, 6vw, 2.7rem);
     line-height:1.3;
-    margin:0 0 1.2rem;
+    margin:0 0 1rem;
     color:var(--ink);
   }
   .flourish{ 
-    margin:0 auto 1.5rem; 
+    margin:0 auto 1.3rem; 
     display:block;
     opacity:.8;
     transition:opacity .3s ease;
+    width:100px;
   }
   .flourish line, .flourish path{ stroke:var(--gold); }
   .flourish path{ fill:var(--gold); }
   .sub{
-    font-size:.95rem;
+    font-size:.9rem;
     color:#5a3d43;
-    line-height:1.7;
-    margin:0 auto 1.8rem;
+    line-height:1.6;
+    margin:0 auto 1.5rem;
     max-width:36ch;
   }
 
@@ -229,24 +242,26 @@
 
   .btn-row{ 
     display:flex; 
-    gap:1rem; 
+    gap:.8rem; 
     justify-content:center; 
     flex-wrap:wrap;
-    margin:1.5rem 0 0;
+    margin:1.2rem 0 0;
   }
   .btn{
-    padding:.9rem 2.4rem;
+    padding:.85rem 2rem;
     border-radius:999px;
     border:1px solid var(--gold);
     background:transparent;
     color:#8a6a2f;
     font-family:'Jost';
-    font-size:.95rem;
+    font-size:.9rem;
     letter-spacing:.03em;
     cursor:pointer;
     transition:all .3s cubic-bezier(.34,.1,.68,1);
     position:relative;
     overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+    min-height:44px;
   }
   .btn::before{
     content:'';
@@ -257,8 +272,22 @@
     transition:left .3s cubic-bezier(.34,.1,.68,1);
     z-index:-1;
   }
-  .btn:hover:not(:disabled)::before{
-    left:0;
+  .btn:active::before,
+  .btn:active{
+    background:rgba(201,161,94,.15);
+    transform:scale(0.98);
+  }
+  @media (min-width: 640px) {
+    .btn::before{
+      left:-100%;
+    }
+    .btn:hover:not(:disabled)::before{
+      left:0;
+    }
+    .btn:hover:not(:disabled){ 
+      transform:translateY(-3px);
+      box-shadow:0 8px 25px rgba(201,161,94,.35);
+    }
   }
   .btn.primary{ 
     background:var(--gold); 
@@ -266,13 +295,14 @@
     font-weight:600;
     box-shadow:0 4px 15px rgba(201,161,94,.2);
   }
-  .btn:hover:not(:disabled){ 
-    transform:translateY(-3px);
-    box-shadow:0 8px 25px rgba(201,161,94,.35);
+  .btn.primary:active{
+    box-shadow:0 2px 8px rgba(201,161,94,.2);
   }
-  .btn.primary:hover:not(:disabled){ 
-    background:var(--gold-light);
-    box-shadow:0 8px 25px rgba(201,161,94,.4);
+  @media (min-width: 640px) {
+    .btn.primary:hover:not(:disabled){ 
+      background:var(--gold-light);
+      box-shadow:0 8px 25px rgba(201,161,94,.4);
+    }
   }
   .btn:focus-visible{ 
     outline:2px solid var(--rose); 
@@ -286,25 +316,26 @@
   .fields{ 
     display:flex; 
     flex-direction:column; 
-    gap:1.3rem; 
-    margin-bottom:1.8rem; 
+    gap:1rem; 
+    margin-bottom:1.5rem; 
     text-align:left; 
   }
   .fields-grid{ 
     display:grid; 
     grid-template-columns:1fr 1fr; 
-    gap:1.2rem; 
+    gap:.8rem; 
   }
   @media (max-width:420px){ 
-    .fields-grid{ grid-template-columns:1fr; } 
+    .fields-grid{ grid-template-columns:1fr; }
+    .fields{ gap:.9rem; }
   }
   label{
     display:block;
-    font-size:.7rem;
+    font-size:.65rem;
     letter-spacing:.18em;
     text-transform:uppercase;
     color:var(--rose);
-    margin-bottom:.5rem;
+    margin-bottom:.4rem;
     font-weight:500;
   }
   .field{
@@ -316,13 +347,15 @@
   input, select, textarea{
     width:100%;
     font-family:'Jost';
-    font-size:.95rem;
+    font-size:16px;
     color:var(--ink);
     background:rgba(255,255,255,.6);
     border:1.5px solid rgba(201,161,94,.35);
     border-radius:8px;
-    padding:.75rem .9rem;
+    padding:.7rem .8rem;
     transition:all .3s cubic-bezier(.34,.1,.68,1);
+    -webkit-appearance: none;
+    appearance: none;
   }
   input:hover, select:hover, textarea:hover{
     background:rgba(255,255,255,.75);
@@ -336,26 +369,26 @@
     box-shadow:0 0 0 3px rgba(184,103,122,.1);
   }
   select{
-    appearance:none;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0L5 6L10 0Z' fill='%238a6a2f'/></svg>");
     background-repeat:no-repeat;
-    background-position:right .9rem center;
-    padding-right:2.5rem;
+    background-position:right .8rem center;
+    padding-right:2.2rem;
     cursor:pointer;
   }
   textarea{ 
     resize:vertical; 
-    min-height:75px; 
+    min-height:70px; 
     font-family:'Jost';
     line-height:1.5;
+    font-size:16px;
   }
 
   .summary{ 
     text-align:left; 
-    margin:0 auto 1.8rem; 
+    margin:0 auto 1.5rem; 
     max-width:36ch;
     background:rgba(201,161,94,.05);
-    padding:1.2rem;
+    padding:1rem;
     border-radius:8px;
     border:1px solid rgba(201,161,94,.2);
   }
@@ -363,9 +396,9 @@
     display:flex; 
     justify-content:space-between; 
     gap:1rem;
-    padding:.65rem 0;
+    padding:.6rem 0;
     border-bottom:1px solid rgba(201,161,94,.2);
-    font-size:.95rem;
+    font-size:.9rem;
   }
   .summary-row:last-child{
     border-bottom:none;
@@ -374,22 +407,22 @@
     color:#8a6a2f; 
     letter-spacing:.05em; 
     text-transform:uppercase; 
-    font-size:.7rem; 
+    font-size:.65rem; 
     align-self:center;
     font-weight:600;
   }
   .summary-row strong{ 
     font-family:'Cormorant Garamond'; 
-    font-size:1.15rem; 
+    font-size:1.1rem; 
     font-weight:600;
     color:var(--ink);
   }
   .note-quote{
     font-style:italic;
     color:#5a3d43;
-    font-size:.9rem;
-    margin-top:1.2rem;
-    padding:1rem;
+    font-size:.85rem;
+    margin-top:1rem;
+    padding:.9rem;
     border-left:3px solid var(--gold);
     background:rgba(201,161,94,.08);
     border-radius:4px;
@@ -398,13 +431,13 @@
   .success-message{
     display:none;
     text-align:center;
-    padding:1.5rem;
-    margin:0 0 1.5rem 0;
+    padding:1.2rem;
+    margin:0 0 1.2rem 0;
     background:rgba(184,207,122,.2);
     border:1.5px solid rgba(184,207,122,.6);
     border-radius:8px;
     color:#5a7a2f;
-    font-size:.95rem;
+    font-size:.9rem;
     animation:slideIn .5s cubic-bezier(.34,.1,.68,1);
     font-weight:500;
   }
@@ -423,9 +456,9 @@
   }
 
   .field-error{
-    font-size:.75rem;
+    font-size:.7rem;
     color:var(--rose);
-    margin-top:.4rem;
+    margin-top:.3rem;
     display:none;
     font-weight:500;
   }
@@ -471,7 +504,7 @@
         <line x1="74" y1="7" x2="120" y2="7" stroke-width="1"/>
       </svg>
       <div class="btn-row">
-        <button class="btn primary" id="btnJa">Ja ♥</button>
+        <button class="btn primary" id="btnJa">Ja</button>
         <button class="btn" id="btnNein">Nein</button>
       </div>
     </div>
@@ -521,7 +554,7 @@
           <textarea id="inpNote" placeholder="z.B. Lieblingsrestaurant, Wünsche, Allergien …"></textarea>
         </div>
       </div>
-      <p class="sub" style="font-size:.85rem; color:#8a6a2f; margin:1rem auto 1.5rem;">💌 Deine Antwort wird direkt zu mir gesendet</p>
+      <p class="sub" style="font-size:.8rem; color:#8a6a2f; margin:1rem auto 1.3rem;">💌 Deine Antwort wird direkt zu mir gesendet</p>
       <div class="btn-row">
         <button class="btn primary" id="btnConfirm" disabled>Einladung bestätigen</button>
       </div>
@@ -545,7 +578,7 @@
         <div class="summary-row"><span>Essen</span><strong id="outFood">–</strong></div>
       </div>
       <p class="note-quote" id="outNote" hidden></p>
-      <p class="sub" style="margin-top:1.5rem;">Deine Auswahl ist schon unterwegs – du musst nichts weiter tun.</p>
+      <p class="sub" style="margin-top:1.2rem;">Deine Auswahl ist schon unterwegs – du musst nichts weiter tun.</p>
     </div>
 
     <!-- Abgesagt -->
