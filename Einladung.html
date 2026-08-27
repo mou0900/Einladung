@@ -65,6 +65,13 @@
     aspect-ratio:300/205;
     cursor:pointer;
     filter:drop-shadow(0 25px 45px rgba(0,0,0,.5));
+    transition:transform .3s ease;
+  }
+  .envelope:hover{
+    transform:scale(1.05);
+  }
+  .envelope:active{
+    transform:scale(0.98);
   }
   .env-back{
     position:absolute; inset:0;
@@ -116,6 +123,11 @@
     letter-spacing:.2em;
     text-transform:uppercase;
     opacity:.75;
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%, 100%{ opacity:.75; }
+    50%{ opacity:1; }
   }
   .envelope.open ~ .hint, .envelope-wrap.hidden{ display:none; }
 
@@ -134,6 +146,8 @@
     transform:scale(.94);
     pointer-events:none;
     transition:opacity .6s ease, transform .6s ease;
+    max-height:85vh;
+    overflow-y:auto;
   }
   .card::before{
     content:'';
@@ -192,9 +206,13 @@
     transition:transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
   }
   .btn.primary{ background:var(--gold); color:var(--wine-900); font-weight:600; }
-  .btn:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(201,161,94,.35); }
-  .btn.primary:hover{ background:var(--gold-light); }
+  .btn:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 10px 22px rgba(201,161,94,.35); }
+  .btn.primary:hover:not(:disabled){ background:var(--gold-light); }
   .btn:focus-visible{ outline:2px solid var(--rose); outline-offset:3px; }
+  .btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+  }
 
   .fields{ display:flex; flex-direction:column; gap:1.1rem; margin-bottom:1.8rem; text-align:left; }
   .fields-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
@@ -216,17 +234,22 @@
     border:1px solid rgba(201,161,94,.55);
     border-radius:8px;
     padding:.65rem .8rem;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--rose); 
+    outline-offset:2px;
+    background:rgba(255,255,255,.8);
+    border-color:var(--rose);
   }
   select{
     appearance:none;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0L5 6L10 0Z' fill='%238a6a2f'/></svg>");
     background-repeat:no-repeat;
     background-position:right .9rem center;
+    padding-right:2.5rem;
   }
   textarea{ resize:vertical; min-height:70px; font-family:'Jost'; }
-  input:focus-visible, select:focus-visible, textarea:focus-visible{
-    outline:2px solid var(--rose); outline-offset:2px;
-  }
 
   .summary{ text-align:left; margin:0 auto 1.6rem; max-width:34ch; }
   .summary-row{
@@ -246,9 +269,63 @@
     border-top:1px solid rgba(201,161,94,.3);
   }
 
+  .success-message{
+    display:none;
+    text-align:center;
+    padding:1.5rem;
+    margin:1rem 0;
+    background:rgba(184,207,122,.15);
+    border:1px solid rgba(184,207,122,.5);
+    border-radius:8px;
+    color:#5a7a2f;
+    font-size:.9rem;
+    animation:slideIn .4s ease;
+  }
+  .success-message.show{
+    display:block;
+  }
+  @keyframes slideIn{
+    from{
+      opacity:0;
+      transform:translateY(-10px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
+
+  .action-buttons{
+    display:flex;
+    gap:.8rem;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:1.2rem;
+  }
+
+  .copy-btn{
+    padding:.6rem 1.2rem;
+    font-size:.8rem;
+    background:rgba(201,161,94,.2);
+    border:1px solid rgba(201,161,94,.6);
+  }
+
+  .field-error{
+    font-size:.75rem;
+    color:var(--rose);
+    margin-top:.3rem;
+    display:none;
+  }
+  .field.error .field-error{
+    display:block;
+  }
+
   @media (prefers-reduced-motion: reduce){
     .mote{ display:none; }
-    .env-flap, .seal, .card, .state{ transition:none !important; animation:none !important; }
+    .env-flap, .seal, .card, .state, .hint, .success-message{ 
+      transition:none !important; 
+      animation:none !important; 
+    }
   }
 </style>
 </head>
@@ -268,14 +345,14 @@
     <!-- Frage -->
     <div class="state active" id="state-question">
       <p class="eyebrow">Eine Einladung für Dich</p>
-      <h1>Möchtest du mit mir<br>auf ein Date gehen?</h1>
+      <h1>Möchtest du mit mir<br>auf ein Date gehen? 😊</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
         <line x1="74" y1="7" x2="120" y2="7" stroke-width="1"/>
       </svg>
       <div class="btn-row">
-        <button class="btn primary" id="btnJa">Ja</button>
+        <button class="btn primary" id="btnJa">Ja ♥</button>
         <button class="btn" id="btnNein">Nein</button>
       </div>
     </div>
@@ -283,7 +360,7 @@
     <!-- Terminplanung -->
     <div class="state" id="state-schedule">
       <p class="eyebrow">Schön, dass du Ja gesagt hast</p>
-      <h1>Dann lass uns das<br>Datum festlegen</h1>
+      <h1>Dann lass uns das<br>Datum festlegen 📅</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -292,62 +369,74 @@
       <div class="fields">
         <div class="fields-grid">
           <div class="field">
-            <label for="inpDate">Datum</label>
-            <input type="date" id="inpDate">
+            <label for="inpDate">Datum *</label>
+            <input type="date" id="inpDate" required>
+            <div class="field-error">Bitte wähle ein Datum</div>
           </div>
           <div class="field">
-            <label for="inpTime">Uhrzeit</label>
-            <input type="time" id="inpTime">
+            <label for="inpTime">Uhrzeit *</label>
+            <input type="time" id="inpTime" required>
+            <div class="field-error">Bitte wähle eine Uhrzeit</div>
           </div>
         </div>
         <div class="field">
-          <label for="inpFood">Art des Essens</label>
-          <select id="inpFood">
-            <option value="Pizza">Pizza</option>
-            <option value="Burger">Burger</option>
-            <option value="Sushi">Sushi</option>
-            <option value="Mexikanisch (Tacos & Burritos)">Mexikanisch (Tacos & Burritos)</option>
-            <option value="Asiatisch (Thai, Vietnamesisch etc.)">Asiatisch (Thai, Vietnamesisch etc.)</option>
-            <option value="Griechisch">Griechisch</option>
-            <option value="Steak / Grillen">Steak / Grillen</option>
-            <option value="Vegetarisch / Vegan">Vegetarisch / Vegan</option>
-            <option value="Café & Kuchen">Café & Kuchen</option>
-            <option value="Nur auf einen Drink">Nur auf einen Drink</option>
-            <option value="Überraschung – lass dich überraschen">Überraschung – lass dich überraschen</option>
+          <label for="inpFood">Art des Essens *</label>
+          <select id="inpFood" required>
+            <option value="">-- Bitte wählen --</option>
+            <option value="🍕 Pizza">🍕 Pizza</option>
+            <option value="🍔 Burger">🍔 Burger</option>
+            <option value="🍣 Sushi">🍣 Sushi</option>
+            <option value="🌮 Mexikanisch (Tacos & Burritos)">🌮 Mexikanisch (Tacos & Burritos)</option>
+            <option value="🥡 Asiatisch (Thai, Vietnamesisch etc.)">🥡 Asiatisch (Thai, Vietnamesisch etc.)</option>
+            <option value="🫒 Griechisch">🫒 Griechisch</option>
+            <option value="🥩 Steak / Grillen">🥩 Steak / Grillen</option>
+            <option value="🥗 Vegetarisch / Vegan">🥗 Vegetarisch / Vegan</option>
+            <option value="☕ Café & Kuchen">☕ Café & Kuchen</option>
+            <option value="🍷 Nur auf einen Drink">🍷 Nur auf einen Drink</option>
+            <option value="🎉 Überraschung – lass dich überraschen">🎉 Überraschung – lass dich überraschen</option>
           </select>
+            <div class="field-error">Bitte wähle eine Art des Essens</div>
         </div>
         <div class="field">
           <label for="inpNote">Sonst noch etwas? (optional)</label>
           <textarea id="inpNote" placeholder="z.B. Lieblingsrestaurant, Wünsche, Allergien …"></textarea>
         </div>
       </div>
+      <p class="sub" style="font-size:.85rem; color:#8a6a2f; margin-bottom:.8rem;">💌 Deine Antwort wird direkt zu mir gesendet</p>
       <div class="btn-row">
-        <button class="btn primary" id="btnConfirm">Einladung bestätigen</button>
+        <button class="btn primary" id="btnConfirm" disabled>Einladung bestätigen</button>
       </div>
     </div>
 
     <!-- Bestätigt -->
     <div class="state" id="state-confirmed">
-      <p class="eyebrow">Bestätigt</p>
-      <h1>Ich freu mich<br>schon sehr!</h1>
+      <p class="eyebrow">Bestätigt ✓</p>
+      <h1>Ich freu mich<br>schon sehr! 🎉</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
         <line x1="74" y1="7" x2="120" y2="7" stroke-width="1"/>
       </svg>
+      <div class="success-message show">
+        ✓ Deine Antwort wurde erfolgreich versendet!
+      </div>
       <div class="summary">
         <div class="summary-row"><span>Datum</span><strong id="outDate">–</strong></div>
         <div class="summary-row"><span>Uhrzeit</span><strong id="outTime">–</strong></div>
         <div class="summary-row"><span>Essen</span><strong id="outFood">–</strong></div>
       </div>
       <p class="note-quote" id="outNote" hidden></p>
-      <p class="sub" style="margin-top:1.4rem;">Deine Auswahl ist schon unterwegs zu ihm – du musst nichts weiter tun.</p>
+      <p class="sub" style="margin-top:1.4rem;">Deine Auswahl ist schon unterwegs – du musst nichts weiter tun.</p>
+      <div class="action-buttons">
+        <button class="btn copy-btn" id="btnCopyLink">🔗 Link kopieren</button>
+        <button class="btn" id="btnNewInvite">Neue Einladung</button>
+      </div>
     </div>
 
     <!-- Abgesagt -->
     <div class="state" id="state-declined">
       <p class="eyebrow">Schade</p>
-      <h1>Vielleicht<br>ein andermal.</h1>
+      <h1>Vielleicht<br>ein andermal. 💭</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -401,16 +490,31 @@
   // Hier deinen Web3Forms Access Key eintragen, sobald du ihn hast:
   const WEB3FORMS_KEY = "deae204b-ed73-4c99-9436-cb849364bee3";
 
+  // Validation für Fields
+  const dateInput = document.getElementById('inpDate');
+  const timeInput = document.getElementById('inpTime');
+  const foodInput = document.getElementById('inpFood');
+  const btnConfirm = document.getElementById('btnConfirm');
+
+  function validateForm(){
+    const isValid = dateInput.value && timeInput.value && foodInput.value;
+    btnConfirm.disabled = !isValid;
+  }
+
+  dateInput.addEventListener('change', validateForm);
+  timeInput.addEventListener('change', validateForm);
+  foodInput.addEventListener('change', validateForm);
+
   document.getElementById('btnConfirm').addEventListener('click', async () => {
-    const dateVal = document.getElementById('inpDate').value;
-    const timeVal = document.getElementById('inpTime').value;
-    const foodVal = document.getElementById('inpFood').value;
+    const dateVal = dateInput.value;
+    const timeVal = timeInput.value;
+    const foodVal = foodInput.value;
     const noteVal = document.getElementById('inpNote').value.trim();
 
-    const dateInput = document.getElementById('inpDate');
-    const timeInput = document.getElementById('inpTime');
-    if(!dateVal){ dateInput.focus(); return; }
-    if(!timeVal){ timeInput.focus(); return; }
+    if(!dateVal || !timeVal || !foodVal){
+      alert('Bitte fülle alle erforderlichen Felder aus');
+      return;
+    }
 
     const prettyDate = new Date(dateVal + 'T00:00:00').toLocaleDateString('de-DE', {
       weekday:'long', day:'numeric', month:'long', year:'numeric'
@@ -428,7 +532,7 @@
       noteEl.hidden = true;
     }
 
-    // Automatischer Versand über Web3Forms – kein Klick auf "Senden" nötig
+    // Automatischer Versand über Web3Forms
     try{
       const formData = new FormData();
       formData.append('access_key', WEB3FORMS_KEY);
@@ -447,6 +551,29 @@
     }
 
     switchState('confirmed');
+  });
+
+  // Copy Link Button
+  document.getElementById('btnCopyLink').addEventListener('click', () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('btnCopyLink');
+      const originalText = btn.textContent;
+      btn.textContent = '✓ Kopiert!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    });
+  });
+
+  // Neue Einladung Button
+  document.getElementById('btnNewInvite').addEventListener('click', () => {
+    dateInput.value = '';
+    timeInput.value = '';
+    foodInput.value = '';
+    document.getElementById('inpNote').value = '';
+    validateForm();
+    switchState('schedule');
   });
 </script>
 </body>
