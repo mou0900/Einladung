@@ -295,21 +295,6 @@
     }
   }
 
-  .action-buttons{
-    display:flex;
-    gap:.8rem;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-top:1.2rem;
-  }
-
-  .copy-btn{
-    padding:.6rem 1.2rem;
-    font-size:.8rem;
-    background:rgba(201,161,94,.2);
-    border:1px solid rgba(201,161,94,.6);
-  }
-
   .field-error{
     font-size:.75rem;
     color:var(--rose);
@@ -345,7 +330,7 @@
     <!-- Frage -->
     <div class="state active" id="state-question">
       <p class="eyebrow">Eine Einladung für Dich</p>
-      <h1>Möchtest du mit mir<br>auf ein Date gehen? 😊</h1>
+      <h1>Möchtest du mit mir<br>auf ein Date gehen?</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -360,7 +345,7 @@
     <!-- Terminplanung -->
     <div class="state" id="state-schedule">
       <p class="eyebrow">Schön, dass du Ja gesagt hast</p>
-      <h1>Dann lass uns das<br>Datum festlegen 📅</h1>
+      <h1>Dann lass uns das<br>Datum festlegen</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -411,7 +396,7 @@
     <!-- Bestätigt -->
     <div class="state" id="state-confirmed">
       <p class="eyebrow">Bestätigt ✓</p>
-      <h1>Ich freu mich<br>schon sehr! 🎉</h1>
+      <h1>Ich freu mich<br>schon sehr!</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -426,17 +411,12 @@
         <div class="summary-row"><span>Essen</span><strong id="outFood">–</strong></div>
       </div>
       <p class="note-quote" id="outNote" hidden></p>
-      <p class="sub" style="margin-top:1.4rem;">Deine Auswahl ist schon unterwegs – du musst nichts weiter tun.</p>
-      <div class="action-buttons">
-        <button class="btn copy-btn" id="btnCopyLink">🔗 Link kopieren</button>
-        <button class="btn" id="btnNewInvite">Neue Einladung</button>
-      </div>
     </div>
 
     <!-- Abgesagt -->
     <div class="state" id="state-declined">
       <p class="eyebrow">Schade</p>
-      <h1>Vielleicht<br>ein andermal. 💭</h1>
+      <h1>Vielleicht<br>ein andermal.</h1>
       <svg class="flourish" width="120" height="14" viewBox="0 0 120 14">
         <line x1="0" y1="7" x2="46" y2="7" stroke-width="1"/>
         <path d="M60 1 L66 7 L60 13 L54 7 Z"/>
@@ -551,29 +531,6 @@
     }
 
     switchState('confirmed');
-  });
-
-  // Copy Link Button
-  document.getElementById('btnCopyLink').addEventListener('click', () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      const btn = document.getElementById('btnCopyLink');
-      const originalText = btn.textContent;
-      btn.textContent = '✓ Kopiert!';
-      setTimeout(() => {
-        btn.textContent = originalText;
-      }, 2000);
-    });
-  });
-
-  // Neue Einladung Button
-  document.getElementById('btnNewInvite').addEventListener('click', () => {
-    dateInput.value = '';
-    timeInput.value = '';
-    foodInput.value = '';
-    document.getElementById('inpNote').value = '';
-    validateForm();
-    switchState('schedule');
   });
 </script>
 </body>
